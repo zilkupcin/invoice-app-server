@@ -1,8 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const authRoute = require("./routes/auth");
+const invoiceRoute = require("./routes/invoices");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -16,16 +18,14 @@ mongoose.connect(uri, { useNewUrlParser: true });
 
 const connection = mongoose.connection;
 
-connection.once('open', () => {
-    console.log('MongoDB db connection established successfuly');
-})
+connection.once("open", () => {
+  console.log("MongoDB db connection established successfuly");
+});
 
-// const invoicesRouter = require('./routes/invoices');
-const usersRouter = require('./routes/users');
-
-// app.use('/invoices', invoicesRouter);
-app.use('/users', usersRouter);
+app.use(express.json());
+app.use("/api/user", authRoute);
+app.use("/api/invoices", invoiceRoute);
 
 app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
-})
+  console.log(`Server is running on port: ${port}`);
+});
