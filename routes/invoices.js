@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 const verify = require("./verifyToken");
 const User = require("../models/user.model");
 const Invoice = require("../models/invoice.model");
+const { invoiceValidation } = require("../validation");
 
 router.get("/", verify, async (req, res) => {
   const userInvoices = await Invoice.find({ userId: req.user._id });
@@ -35,7 +36,6 @@ router.get("/:invoiceId", verify, async (req, res) => {
 
 router.post("/delete/:invoiceId", verify, async (req, res) => {
   const invoiceId = req.params.invoiceId;
-  console.log(invoiceId);
 
   try {
     const response = await Invoice.deleteOne({
@@ -57,6 +57,10 @@ router.post("/edit/:invoiceId", verify, async (req, res) => {
   const invoiceId = req.params.invoiceId;
 
   // Validate data
+  const { error } = invoiceValidation(req.body);
+
+  if (error) res.status(400).json(error);
+
   try {
     const invoice = await Invoice.updateOne(
       {
@@ -72,10 +76,32 @@ router.post("/edit/:invoiceId", verify, async (req, res) => {
   }
 });
 
+router.get("/paid/:invoiceId", verify, async (req, res) => {
+  const invoiceId = req.params.invoiceId;
+
+  try {
+    const invoice = await Invoice.updateOne(
+      {
+        _id: invoiceId,
+        userId: req.user._id,
+      },
+      { status: "paid" }
+    );
+
+    res.status(200).json(invoice);
+  } catch (e) {
+    return res.status(400).send(e);
+  }
+});
+
 router.post("/add", verify, async (req, res) => {
   const userId = req.user._id;
 
   const invoiceData = { ...req.body };
+
+  // Validate data
+  const { error } = invoiceValidation(invoiceData);
+  if (error) res.status(400).send(error.details[0].message);
 
   invoiceData.items.forEach(
     (item) => (item._id = new mongoose.mongo.ObjectId())

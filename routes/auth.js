@@ -1,7 +1,11 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
+var mongoose = require("mongoose");
+const invoices = require("../data/data.json");
 const User = require("../models/user.model");
+const Invoice = require("../models/invoice.model");
 const { registerValidation, loginValidation } = require("../validation");
 
 // Validation
