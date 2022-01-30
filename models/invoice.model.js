@@ -5,17 +5,72 @@ const Schema = mongoose.Schema;
 const invoiceSchema = new Schema(
   {
     userId: { type: String, required: true },
-    streetAddress: { type: String, required: true },
-    city: { type: String, required: true },
-    postCode: { type: String, required: true },
-    country: { type: String, required: true },
-    clientName: { type: String, required: true },
-    clientEmail: { type: String, required: true },
-    clientStreetAddress: { type: String, required: true },
-    clientCity: { type: String, required: true },
-    clientPostCode: { type: String, required: true },
-    clientCountry: { type: String, required: true },
-    date: { type: Date, required: true },
+    streetAddress: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    city: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    postCode: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    country: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientName: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientEmail: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientStreetAddress: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientCity: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientPostCode: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    clientCountry: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
+    date: {
+      type: Date,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
     paymentTerms: {
       type: String,
       enum: ["net_1", "net_7", "net_14", "net_30"],
@@ -26,7 +81,12 @@ const invoiceSchema = new Schema(
       enum: ["draft", "pending", "paid"],
       default: "draft",
     },
-    projectDescription: { type: String, required: true },
+    projectDescription: {
+      type: String,
+      required: function () {
+        return this.status !== "draft";
+      },
+    },
     items: [
       {
         name: { type: String, required: true },
